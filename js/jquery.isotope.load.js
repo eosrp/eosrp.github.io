@@ -8,6 +8,7 @@ var cpuPriceUsd;
 var maxRam;
 var usedRam;
 var tlosPriceUsd;
+let tlosEosScalar;
 
 var chainEndpoint = "https://telos.eos.barcelona";
 
@@ -25,176 +26,216 @@ jQuery(window).load(function($) {
         "Your Browser does not support AJAX!\nIt's about time to upgrade don't you think?"
       );
     }
+    
+    if (!Modernizr.promises) {
+        alert(
+            "Your Browser does not support modern versions of JavaScript!\nIt's about time to upgrade don't you think?"
+        );
+    }
   }
-
-  var reqTlos   = getXmlHttpRequestObject();
-  var reqEos    = getXmlHttpRequestObject();
-  var reqRam    = getXmlHttpRequestObject();
-  var reqBan    = getXmlHttpRequestObject();
-  var reqGlobal = getXmlHttpRequestObject();
 
   function updateEosData() {
-    if (reqGlobal.readyState == 4 || reqGlobal.readyState == 0) {
-      reqGlobal.open("POST", chainEndpoint + "/v1/chain/get_table_rows");
-      reqGlobal.onreadystatechange = handleResponseGlobal;
-    }
+      // Global
+      let globalPromise = new Promise((resolve, reject) => {
+          let reqGlobal = getXmlHttpRequestObject();
 
-    if (reqEos.readyState == 4 || reqEos.readyState == 0) {
-      reqEos.open(
-        "GET",
-        "https://api.newdex.io/v1/ticker?symbol=eosio.token-eos-eusd");
-      reqEos.onreadystatechange = handleResponseEos;
-    
-    }
+          reqGlobal.open("POST", chainEndpoint + "/v1/chain/get_table_rows");
+          reqGlobal.onload = () => {
+              resolve(reqGlobal);
+          };
+          reqGlobal.onerror = () => {
+              reject(reqGlobal);
+          };
 
-    if (reqTlos.readyState == 4 || reqTlos.readyState == 0) {
-      reqTlos.open(
-          "GET",
-          "https://api.newdex.io/v1/ticker?symbol=eosio.token-tlos-eos");
-      reqTlos.onreadystatechange = handleResponseTlos;
-    }
-
-    if (reqRam.readyState == 4 || reqRam.readyState == 0) {
-      reqRam.open("POST", chainEndpoint + "/v1/chain/get_table_rows");
-      reqRam.onreadystatechange = handleResponseRam;
-    }
-
-    if (reqBan.readyState == 4 || reqBan.readyState == 0) {
-      reqBan.open("POST", chainEndpoint + "/v1/chain/get_account");
-      reqBan.onreadystatechange = handleResponseBan;
-    }
-    reqGlobal.send(
-      JSON.stringify({
-        json: "true",
-        code: "eosio",
-        scope: "eosio",
-        table: "global"
+          reqGlobal.send(
+              JSON.stringify({
+                  json: "true",
+                  code: "eosio",
+                  scope: "eosio",
+                  table: "global"
+              })
+          );
       })
-    );
-    reqEos.send();
-    reqTlos.send();
+          .then(xhr => {
+              let responseJson = JSON.parse(xhr.responseText);
+
+              maxRam = responseJson.rows[0].max_ram_size;
+              usedRam = responseJson.rows[0].total_ram_bytes_reserved;
+          })
+          .catch(xhr => {
+              showRequestError(`Failed to contact data source server (${chainEndpoint}).  Check your browser console for details.`);
+              console.error(xhr);
+          });
+
+      // EOS
+      let eosPromise = new Promise((resolve, reject) => {
+          let reqEos = getXmlHttpRequestObject();
+
+          reqEos.open("GET", "https://api.newdex.io/v1/ticker?symbol=eosio.token-eos-eusd");
+          reqEos.onload = () => {
+              resolve(reqEos);
+          };
+          reqEos.onerror = () => {
+              reject(reqEos);
+          };
+
+          reqEos.send();
+      })
+          .then(xhr => {
+              let responseJson = JSON.parse(xhr.responseText);
+
+              eosPriceUsd = responseJson.data.last;
+          })
+          .catch(xhr => {
+              showRequestError(`Failed to contact data source server (newdex).  Check your browser console for details.`);
+              console.error(xhr);
+          });
+
+      // TLOS
+      let tlosPromise = new Promise((resolve, reject) => {
+          let reqTlos = getXmlHttpRequestObject();
+
+          reqTlos.open("GET", "https://api.newdex.io/v1/ticker?symbol=eosio.token-tlos-eos");
+          reqTlos.onload = () => {
+              resolve(reqTlos);
+          };
+          reqTlos.onerror = () => {
+              reject(reqTlos);
+          };
+
+          reqTlos.send();
+      })
+          .then(xhr => {
+              let responseJson = JSON.parse(xhr.responseText);
+
+              tlosEosScalar = responseJson.data.last;
+          })
+          .catch(xhr => {
+              showRequestError(`Failed to contact data source server (newdex).  Check your browser console for details.`);
+              console.error(xhr);
+          });
+
+      // Ram
+      let ramPromise = new Promise((resolve, reject) => {
+          let reqRam = getXmlHttpRequestObject();
+
+          reqRam.open("POST", chainEndpoint + "/v1/chain/get_table_rows");
+          reqRam.onload = () => {
+              resolve(reqRam);
+          };
+          reqRam.onerror = () => {
+              reject(reqRam);
+          };
+
+          reqRam.send(
+              JSON.stringify({
+                  json: "true",
+                  code: "eosio",
+                  scope: "eosio",
+                  table: "rammarket",
+                  limit: "10"
+              })
+          );
+      })
+          .then(xhr => {
+              let responseJson = JSON.parse(xhr.responseText);
+              let ramBaseBalance = responseJson.rows[0].base.balance; // Amount of RAM bytes in use
+              let ramQuoteBalance = responseJson.rows[0].quote.balance; // Amount of EOS in the RAM collector
+
+              ramBaseBalance = ramBaseBalance.substr(0, ramBaseBalance.indexOf(" "));
+              ramQuoteBalance = ramQuoteBalance.substr(0, ramQuoteBalance.indexOf(" "));
+
+              ramPriceEos = ((ramQuoteBalance / ramBaseBalance) * 1024).toFixed(8); // Price in KiB
+          })
+          .catch(xhr => {
+              showRequestError(`Failed to contact data source server (${chainEndpoint}).  Check your browser console for details.`);
+              console.error(xhr);
+          });
+
+      // Ban
+      let banPromise = new Promise((resolve, reject) => {
+          let reqBan = getXmlHttpRequestObject();
+
+          reqBan.open("POST", chainEndpoint + "/v1/chain/get_account");
+          reqBan.onload = () => {
+              resolve(reqBan);
+          };
+          reqBan.onerror = () => {
+              reject(reqBan);
+          };
+
+          reqBan.send(JSON.stringify({ account_name: "eosbarcelona" }));
+      })
+          .then(xhr => {
+              let responseJson = JSON.parse(xhr.responseText);
+              let netWeight = responseJson.total_resources.net_weight;
+              let netStaked = netWeight.substr(0, netWeight.indexOf(" "));
+              let netAvailable = responseJson.net_limit.max / 1024; //~ convert bytes to kilobytes
+              let cpuWeight = responseJson.total_resources.cpu_weight;
+              let cpuStaked = cpuWeight.substr(0, cpuWeight.indexOf(" "));
+              let cpuAvailable = responseJson.cpu_limit.max / 1000; // convert microseconds to milliseconds
+
+              netPriceEos = (netStaked / netAvailable / 3).toFixed(8); //~ divide by 3 to get average per day from 3 day avg
+              cpuPriceEos = (cpuStaked / cpuAvailable / 3).toFixed(8); //~ divide by 3 to get average per day from 3 day avg
+          })
+          .catch(xhr => {
+              showRequestError(`Failed to contact data source server (${chainEndpoint}).  Check your browser console for details.`);
+              console.error(xhr);
+          });
+
+      Promise.all([globalPromise, eosPromise, tlosPromise, ramPromise, banPromise])
+          .then(() => {
+              runCalculations();
+              updatePage();
+          });
   }
 
-  function handleResponseGlobal() {
-    if (reqGlobal.readyState == 4) {
-      parseStateGlobal(JSON.parse(reqGlobal.responseText));
-    }
+  function runCalculations() {
+      tlosPriceUsd = tlosEosScalar * eosPriceUsd;
+
+      ramPriceUsd = ramPriceEos * tlosPriceUsd;
+      netPriceUsd = netPriceEos * tlosPriceUsd;
+      cpuPriceUsd = cpuPriceEos * tlosPriceUsd;
   }
 
-  function handleResponseTlos() {
-    if (reqTlos.readyState == 4) {
-      parseStateTlos(JSON.parse(reqTlos.responseText));
-    }
-  }
+  function updatePage() {
+      let tlosTarget = $("#eos-price-usd");
 
-  function handleResponseEos() {
-    if (reqEos.readyState == 4) {
-      parseStateEos(JSON.parse(reqEos.responseText));
-      reqRam.send(
-        JSON.stringify({
-          json: "true",
-          code: "eosio",
-          scope: "eosio",
-          table: "rammarket",
-          limit: "10"
-        })
-      );
-      reqBan.send(JSON.stringify({ account_name: "eosbarcelona" }));
-    }
-  }
+      tlosTarget.html(`1 TLOS = $${tlosPriceUsd.toFixed(2)} USD`);
 
-  function handleResponseRam() {
-    if (reqRam.readyState == 4) {
-      parseStateRam(JSON.parse(reqRam.responseText));
-    }
-  }
+      let ramUtilization = (usedRam / maxRam) * 100;
+      let maxRamTarget = $("#maxRam");
+      maxRamTarget.html(`${(maxRam / 1024 / 1024 / 1024).toFixed(2)} GiB`);
 
-  function handleResponseBan() {
-    if (reqBan.readyState == 4) {
-      parseStateBan(JSON.parse(reqBan.responseText));
-    }
-  }
+      let allocatedRamElem = $("#allocatedRam");
+      allocatedRamElem.html(`${(usedRam / 1024 / 1024 / 1024).toFixed(2)} GiB`);
 
-  function parseStateGlobal(xDoc) {
-    if (xDoc == null) return;
+      let utilizedRamElem = $("#utilizedRam");
+      utilizedRamElem.html(`${ramUtilization.toFixed(2)}%`);
 
-    maxRam = xDoc.rows[0].max_ram_size;
-    usedRam = xDoc.rows[0].total_ram_bytes_reserved;
-  }
+      let ramUtilValElem = $("#ramUtilVal");
+      ramUtilValElem.html(`${ramUtilization.toFixed(2)}%`);
 
-  function parseStateTlos(xDoc) {
-     if (xDoc == null) return;
+      let ramUtilBarElem = $("#ramUtilBar");
+      ramUtilBarElem.css('width', ramUtilization.toFixed(2) + "%");
 
-    var target = document.getElementById("eos-price-usd");
-    tlosPriceUsd = xDoc.data.last * eosPriceUsd;
-    target.innerHTML = "1 TLOS = $" + tlosPriceUsd.toFixed(2) + " USD";
-  }
+      let ramPriceEosElem = $("#ram-price-eos");
+      ramPriceEosElem.html(`${ramPriceEos} TLOS per KiB`);
 
-  function parseStateEos(xDoc) {
-    if (xDoc == null) return;
+      let ramPriceElem = $("#ram-price-usd");
+      ramPriceElem.html(`~ $${(ramPriceEos * tlosPriceUsd).toFixed(3)} USD per KiB`);
 
-    //var target = document.getElementById("eos-price-usd");
-    // eosPriceUsd = xDoc.data.quotes.USD.price;
-    eosPriceUsd = xDoc.data.last;
-    //target.innerHTML = "1 EOS = $" + eosPriceUsd.toFixed(2) + " USD";
-  }
+      let netPriceEosElem = $("#net-price-eos");
+      netPriceEosElem.html(`${netPriceEos} TLOS/KiB/Day`);
 
-  function parseStateRam(xDoc) {
-    if (xDoc == null) return;
+      let netPriceUsdElem = $("#net-price-usd");
+      netPriceUsdElem.html(`~ $${(netPriceEos * tlosPriceUsd).toFixed(3)} USD/KiB/Day`);
 
-    var ramBaseBalance = xDoc.rows[0].base.balance; // Amount of RAM bytes in use
-    ramBaseBalance = ramBaseBalance.substr(0, ramBaseBalance.indexOf(" "));
-    var ramQuoteBalance = xDoc.rows[0].quote.balance; // Amount of EOS in the RAM collector
-    ramQuoteBalance = ramQuoteBalance.substr(0, ramQuoteBalance.indexOf(" "));
-    ramPriceEos = ((ramQuoteBalance / ramBaseBalance) * 1024).toFixed(8); // Price in KiB
-    ramPriceUsd = ramPriceEos * tlosPriceUsd;
-    var ramUtilization = (usedRam / maxRam) * 100;
+      let cpuPriceEosElem = $("#cpu-price-eos");
+      cpuPriceEosElem.html(`${cpuPriceEos} TLOS/ms/Day`);
 
-    var target = document.getElementById("maxRam");
-    target.innerHTML = (maxRam / 1024 / 1024 / 1024).toFixed(2) + " GiB";
-    target = document.getElementById("allocatedRam");
-    target.innerHTML = (usedRam / 1024 / 1024 / 1024).toFixed(2) + " GiB";
-    target = document.getElementById("utilizedRam");
-    target.innerHTML = ramUtilization.toFixed(2) + " %";
-    target = document.getElementById("ramUtilVal");
-    target.innerHTML = ramUtilization.toFixed(2) + "%";
-    target = document.getElementById("ramUtilBar");
-    target.style.width = ramUtilization.toFixed(2) + "%";
-    target = document.getElementById("ram-price-eos");
-    target.innerHTML = ramPriceEos + " TLOS per KiB";
-    target = document.getElementById("ram-price-usd");
-    target.innerHTML =
-      "~ $" + (ramPriceEos * tlosPriceUsd).toFixed(3) + " USD per KiB";
-  }
-
-  function parseStateBan(xDoc) {
-    if (xDoc == null) return;
-
-    var target = document.getElementById("net-price-eos");
-    var netStaked = xDoc.total_resources.net_weight.substr(
-      0,
-      xDoc.total_resources.net_weight.indexOf(" ")
-    );
-    var netAvailable = xDoc.net_limit.max / 1024; //~ convert bytes to kilobytes
-    netPriceEos = (netStaked / netAvailable / 3).toFixed(8); //~ divide by 3 to get average per day from 3 day avg
-    netPriceUsd = netPriceEos * tlosPriceUsd;
-    target.innerHTML = netPriceEos + " TLOS/KiB/Day";
-    target = document.getElementById("net-price-usd");
-    target.innerHTML =
-      "~ $" + (netPriceEos * tlosPriceUsd).toFixed(3) + " USD/KiB/Day";
-
-    target = document.getElementById("cpu-price-eos");
-    var cpuStaked = xDoc.total_resources.cpu_weight.substr(
-      0,
-      xDoc.total_resources.cpu_weight.indexOf(" ")
-    );
-    var cpuAvailable = xDoc.cpu_limit.max / 1000; // convert microseconds to milliseconds
-    cpuPriceEos = (cpuStaked / cpuAvailable / 3).toFixed(8); //~ divide by 3 to get average per day from 3 day avg
-    cpuPriceUsd = cpuPriceEos * tlosPriceUsd;
-    target.innerHTML = cpuPriceEos + " TLOS/ms/Day";
-    target = document.getElementById("cpu-price-usd");
-    target.innerHTML =
-      "~ $" + (cpuPriceEos * tlosPriceUsd).toFixed(3) + " USD/ms/Day";
+      let cpuPriceUsdElem = $("#cpu-price-usd");
+      cpuPriceUsdElem.html(`~ $${(cpuPriceEos * tlosPriceUsd).toFixed(3)} USD/ms/Day`);
   }
   /* --- End of EOS data routines --- */
 
