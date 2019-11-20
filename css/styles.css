@@ -458,6 +458,17 @@ h1#logo a {
   right: 35px;
   bottom: 12px;
 }
+
+#ghobsonlogo {
+  background: url(../images/ghobson-logo.png) center no-repeat;
+  background-size: 60px 82px;
+  width: 60px;
+  height: 82px;
+  position: absolute;
+  right: 35px;
+  bottom: 12px;
+}
+
 #sourcecode {
   position: absolute;
   left: 35px;

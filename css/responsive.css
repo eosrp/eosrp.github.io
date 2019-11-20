@@ -78,6 +78,10 @@ h4#headertitle {
 /*Small devices (portrait tablets):*/
 @media only screen and (max-width: 668px) {
 	/* re-arrange footer on smaller screens */
+
+#ghobsonlogo {
+bottom: 35px
+}
 #eosnylogo {
 bottom: 35px
 }
@@ -173,6 +177,9 @@ header #eos-price-usd {
 }
 #eosnylogo {
 	bottom: 22px;
+}
+#ghobsonlogo {
+        bottom: 22px;
 }
 #sourcecode {
 	left: 0px;
