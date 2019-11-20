@@ -7,6 +7,7 @@ var cpuPriceEos;
 var cpuPriceUsd;
 var maxRam;
 var usedRam;
+var tlosPriceUsd;
 
 var chainEndpoint = "https://telos.eos.barcelona";
 
@@ -26,6 +27,7 @@ jQuery(window).load(function($) {
     }
   }
 
+  var reqTlos = getXmlHttpRequestObject();
   var reqEos = getXmlHttpRequestObject();
   var reqRam = getXmlHttpRequestObject();
   var reqBan = getXmlHttpRequestObject();
@@ -38,12 +40,19 @@ jQuery(window).load(function($) {
     }
 
     if (reqEos.readyState == 4 || reqEos.readyState == 0) {
-      // reqEos.open("GET", "https://api.coinmarketcap.com/v2/ticker/1765/"); //~ EOS/USD price
       reqEos.open(
         "GET",
         "https://api.newdex.io/v1/ticker?symbol=eosio.token-eos-eusd"
       );
       reqEos.onreadystatechange = handleResponseEos;
+    }
+
+    if (reqTlos.readyState == 4 || reqTlos.readyState == 0) {
+      reqTlos.open(
+        "GET",
+        "https://api.newdex.io/v1/ticker?symbol=eosio.token-tlos-eos"
+      );
+      reqTlos.onreadystatechange = handleResponseTlos;
     }
 
     if (reqRam.readyState == 4 || reqRam.readyState == 0) {
@@ -69,6 +78,12 @@ jQuery(window).load(function($) {
     if (reqGlobal.readyState == 4) {
       parseStateGlobal(JSON.parse(reqGlobal.responseText));
       reqEos.send();
+    }
+  }
+
+  function handleResponseTlos() {
+    if (reqTlos.readyState == 4) {
+      parseStateTlos(JSON.parse(reqTlos.responseText));
     }
   }
 
@@ -107,13 +122,21 @@ jQuery(window).load(function($) {
     usedRam = xDoc.rows[0].total_ram_bytes_reserved;
   }
 
+  function parseStateTlos(xDoc) {
+     if (xDoc == null) return;
+
+    var target = document.getElementById("eos-price-usd");
+    tlosPriceUsd = xDoc.data.last * eosPriceUsd;
+    target.innerHTML = "1 TLOS = $" + tlosPriceUsd.toFixed(2) + " USD";
+  }
+
   function parseStateEos(xDoc) {
     if (xDoc == null) return;
 
-    var target = document.getElementById("eos-price-usd");
+    //var target = document.getElementById("eos-price-usd");
     // eosPriceUsd = xDoc.data.quotes.USD.price;
     eosPriceUsd = xDoc.data.last;
-    target.innerHTML = "1 EOS = $" + eosPriceUsd.toFixed(2) + " USD";
+    //target.innerHTML = "1 EOS = $" + eosPriceUsd.toFixed(2) + " USD";
   }
 
   function parseStateRam(xDoc) {
@@ -124,7 +147,7 @@ jQuery(window).load(function($) {
     var ramQuoteBalance = xDoc.rows[0].quote.balance; // Amount of EOS in the RAM collector
     ramQuoteBalance = ramQuoteBalance.substr(0, ramQuoteBalance.indexOf(" "));
     ramPriceEos = ((ramQuoteBalance / ramBaseBalance) * 1024).toFixed(8); // Price in KiB
-    ramPriceUsd = ramPriceEos * eosPriceUsd;
+    ramPriceUsd = ramPriceEos * tlosPriceUsd;
     var ramUtilization = (usedRam / maxRam) * 100;
 
     var target = document.getElementById("maxRam");
@@ -141,7 +164,7 @@ jQuery(window).load(function($) {
     target.innerHTML = ramPriceEos + " TLOS per KiB";
     target = document.getElementById("ram-price-usd");
     target.innerHTML =
-      "~ $" + (ramPriceEos * eosPriceUsd).toFixed(3) + " USD per KiB";
+      "~ $" + (ramPriceEos * tlosPriceUsd).toFixed(3) + " USD per KiB";
   }
 
   function parseStateBan(xDoc) {
@@ -154,11 +177,11 @@ jQuery(window).load(function($) {
     );
     var netAvailable = xDoc.net_limit.max / 1024; //~ convert bytes to kilobytes
     netPriceEos = (netStaked / netAvailable / 3).toFixed(8); //~ divide by 3 to get average per day from 3 day avg
-    netPriceUsd = netPriceEos * eosPriceUsd;
+    netPriceUsd = netPriceEos * tlosPriceUsd;
     target.innerHTML = netPriceEos + " TLOS/KiB/Day";
     target = document.getElementById("net-price-usd");
     target.innerHTML =
-      "~ $" + (netPriceEos * eosPriceUsd).toFixed(3) + " USD/KiB/Day";
+      "~ $" + (netPriceEos * tlosPriceUsd).toFixed(3) + " USD/KiB/Day";
 
     target = document.getElementById("cpu-price-eos");
     var cpuStaked = xDoc.total_resources.cpu_weight.substr(
@@ -167,11 +190,11 @@ jQuery(window).load(function($) {
     );
     var cpuAvailable = xDoc.cpu_limit.max / 1000; // convert microseconds to milliseconds
     cpuPriceEos = (cpuStaked / cpuAvailable / 3).toFixed(8); //~ divide by 3 to get average per day from 3 day avg
-    cpuPriceUsd = cpuPriceEos * eosPriceUsd;
+    cpuPriceUsd = cpuPriceEos * tlosPriceUsd;
     target.innerHTML = cpuPriceEos + " TLOS/ms/Day";
     target = document.getElementById("cpu-price-usd");
     target.innerHTML =
-      "~ $" + (cpuPriceEos * eosPriceUsd).toFixed(3) + " USD/ms/Day";
+      "~ $" + (cpuPriceEos * tlosPriceUsd).toFixed(3) + " USD/ms/Day";
   }
   /* --- End of EOS data routines --- */
 
