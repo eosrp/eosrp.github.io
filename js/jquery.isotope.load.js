@@ -12,7 +12,7 @@ let tlosEosScalar;
 
 var chainEndpoint = "https://telos.eos.barcelona";
 
-jQuery(window).load(function($) {
+$(window).load(function($loadEvent) {
   "use strict";
 
   /* --- Begin EOS data update routines --- */
@@ -240,8 +240,8 @@ jQuery(window).load(function($) {
   /* --- End of EOS data routines --- */
 
   function eborLoadIsotope() {
-    var $container = jQuery("#container"),
-      $optionContainer = jQuery("#options"),
+    var $container = $("#container"),
+      $optionContainer = $("#options"),
       $options = $optionContainer.find('a[href^="#"]').not('a[href="#"]'),
       isOptionLinkClicked = false;
 
@@ -253,17 +253,17 @@ jQuery(window).load(function($) {
       layoutMode: "packery"
     });
 
-    if (jQuery("body").hasClass("video-detail"))
+    if ($("body").hasClass("video-detail"))
       $container.isotope({
         transformsEnabled: false
       });
 
-    jQuery(window).smartresize(function() {
+    $(window).smartresize(function() {
       $container.isotope("layout");
     });
 
     $options.on("click", function() {
-      var $this = jQuery(this),
+      var $this = $(this),
         href = $this.attr("href");
 
       if ($this.hasClass("selected")) {
@@ -279,7 +279,7 @@ jQuery(window).load(function($) {
       return false;
     });
 
-    jQuery(window)
+    $(window)
       .on("hashchange", function() {
         var theFilter = window.location.hash.replace(/^#/, "");
 
@@ -302,7 +302,7 @@ jQuery(window).load(function($) {
   }
   eborLoadIsotope();
   updateEosData(); //~ Update EOS data on page load
-  jQuery(window)
+  $(window)
     .trigger("resize")
     .trigger("smartresize");
 });
