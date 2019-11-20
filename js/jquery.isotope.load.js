@@ -8,7 +8,7 @@ var cpuPriceUsd;
 var maxRam;
 var usedRam;
 
-var chainEndpoint = "https://api.eossweden.org";
+var chainEndpoint = "https://telos.eos.barcelona";
 
 jQuery(window).load(function($) {
   "use strict";
@@ -84,7 +84,7 @@ jQuery(window).load(function($) {
           limit: "10"
         })
       );
-      reqBan.send(JSON.stringify({ account_name: "eosnewyorkio" }));
+      reqBan.send(JSON.stringify({ account_name: "eosbarcelona" }));
     }
   }
 
@@ -138,7 +138,7 @@ jQuery(window).load(function($) {
     target = document.getElementById("ramUtilBar");
     target.style.width = ramUtilization.toFixed(2) + "%";
     target = document.getElementById("ram-price-eos");
-    target.innerHTML = ramPriceEos + " EOS per KiB";
+    target.innerHTML = ramPriceEos + " TLOS per KiB";
     target = document.getElementById("ram-price-usd");
     target.innerHTML =
       "~ $" + (ramPriceEos * eosPriceUsd).toFixed(3) + " USD per KiB";
@@ -155,7 +155,7 @@ jQuery(window).load(function($) {
     var netAvailable = xDoc.net_limit.max / 1024; //~ convert bytes to kilobytes
     netPriceEos = (netStaked / netAvailable / 3).toFixed(8); //~ divide by 3 to get average per day from 3 day avg
     netPriceUsd = netPriceEos * eosPriceUsd;
-    target.innerHTML = netPriceEos + " EOS/KiB/Day";
+    target.innerHTML = netPriceEos + " TLOS/KiB/Day";
     target = document.getElementById("net-price-usd");
     target.innerHTML =
       "~ $" + (netPriceEos * eosPriceUsd).toFixed(3) + " USD/KiB/Day";
@@ -168,7 +168,7 @@ jQuery(window).load(function($) {
     var cpuAvailable = xDoc.cpu_limit.max / 1000; // convert microseconds to milliseconds
     cpuPriceEos = (cpuStaked / cpuAvailable / 3).toFixed(8); //~ divide by 3 to get average per day from 3 day avg
     cpuPriceUsd = cpuPriceEos * eosPriceUsd;
-    target.innerHTML = cpuPriceEos + " EOS/ms/Day";
+    target.innerHTML = cpuPriceEos + " TLOS/ms/Day";
     target = document.getElementById("cpu-price-usd");
     target.innerHTML =
       "~ $" + (cpuPriceEos * eosPriceUsd).toFixed(3) + " USD/ms/Day";
@@ -274,7 +274,7 @@ $(function() {
         if (currencyValue == "USD") {
           priceValue = ramPriceUsd;
         }
-        if (currencyValue == "EOS") {
+        if (currencyValue == "TLOS") {
           priceValue = ramPriceEos;
         }
         value = document.getElementById("eos-afford-ram").value;
@@ -284,7 +284,7 @@ $(function() {
               value = (value / ramPriceUsd) * 1024;
               break;
             }
-            if (currencyValue == "EOS") {
+            if (currencyValue == "TLOS") {
               value = (value / ramPriceEos) * 1024;
               break;
             }
@@ -293,7 +293,7 @@ $(function() {
               value = value / ramPriceUsd;
               break;
             }
-            if (currencyValue == "EOS") {
+            if (currencyValue == "TLOS") {
               value = value / ramPriceEos;
               break;
             }
@@ -303,7 +303,7 @@ $(function() {
               value = value / ramPriceUsd / 1024;
               break;
             }
-            if (currencyValue == "EOS") {
+            if (currencyValue == "TLOS") {
               value = value / ramPriceEos / 1024;
               break;
             }
@@ -313,7 +313,7 @@ $(function() {
               value = value / ramPriceUsd / 1024 / 1024;
               break;
             }
-            if (currencyValue == "EOS") {
+            if (currencyValue == "TLOS") {
               value = value / ramPriceEos / 1024 / 1024;
               break;
             }
@@ -335,7 +335,7 @@ $(function() {
         if (currencyValue == "USD") {
           priceValue = netPriceUsd;
         }
-        if (currencyValue == "EOS") {
+        if (currencyValue == "TLOS") {
           priceValue = netPriceEos;
         }
         value = document.getElementById("eos-afford-net").value;
@@ -345,7 +345,7 @@ $(function() {
               value = (value / netPriceUsd) * 1024;
               break;
             }
-            if (currencyValue == "EOS") {
+            if (currencyValue == "TLOS") {
               value = (value / netPriceEos) * 1024;
               break;
             }
@@ -354,7 +354,7 @@ $(function() {
               value = value / netPriceUsd;
               break;
             }
-            if (currencyValue == "EOS") {
+            if (currencyValue == "TLOS") {
               value = value / netPriceEos;
               break;
             }
@@ -364,7 +364,7 @@ $(function() {
               value = value / netPriceUsd / 1024;
               break;
             }
-            if (currencyValue == "EOS") {
+            if (currencyValue == "TLOS") {
               value = value / netPriceEos / 1024;
               break;
             }
@@ -374,7 +374,7 @@ $(function() {
               value = value / netPriceUsd / 1024 / 1024;
               break;
             }
-            if (currencyValue == "EOS") {
+            if (currencyValue == "TLOS") {
               value = value / netPriceEos / 1024 / 1024;
               break;
             }
@@ -396,7 +396,7 @@ $(function() {
         if (currencyValue == "USD") {
           priceValue = cpuPriceUsd;
         }
-        if (currencyValue == "EOS") {
+        if (currencyValue == "TLOS") {
           priceValue = cpuPriceEos;
         }
         value = document.getElementById("eos-afford-cpu").value;
@@ -406,7 +406,7 @@ $(function() {
               value = (value / cpuPriceUsd) * 1000;
               break;
             }
-            if (currencyValue == "EOS") {
+            if (currencyValue == "TLOS") {
               value = (value / cpuPriceEos) * 1000;
               break;
             }
@@ -415,7 +415,7 @@ $(function() {
               value = value / cpuPriceUsd;
               break;
             }
-            if (currencyValue == "EOS") {
+            if (currencyValue == "TLOS") {
               value = value / cpuPriceEos;
               break;
             }
@@ -425,7 +425,7 @@ $(function() {
               value = value / cpuPriceUsd / 1000;
               break;
             }
-            if (currencyValue == "EOS") {
+            if (currencyValue == "TLOS") {
               value = value / cpuPriceEos / 1000;
               break;
             }
@@ -447,7 +447,7 @@ $(function() {
           priceValue = ramPriceUsd;
           roundingUnits = 3;
         }
-        if (currencyValue == "EOS") {
+        if (currencyValue == "TLOS") {
           priceValue = ramPriceEos;
           roundingUnits = 8;
         }
@@ -458,7 +458,7 @@ $(function() {
               value = (value * ramPriceUsd) / 1024;
               break;
             }
-            if (currencyValue == "EOS") {
+            if (currencyValue == "TLOS") {
               value = (value * ramPriceEos) / 1024;
               break;
             }
@@ -467,7 +467,7 @@ $(function() {
               value = value * ramPriceUsd;
               break;
             }
-            if (currencyValue == "EOS") {
+            if (currencyValue == "TLOS") {
               value = value * ramPriceEos;
               break;
             }
@@ -477,7 +477,7 @@ $(function() {
               value = value * ramPriceUsd * 1024;
               break;
             }
-            if (currencyValue == "EOS") {
+            if (currencyValue == "TLOS") {
               value = value * ramPriceEos * 1024;
               break;
             }
@@ -487,7 +487,7 @@ $(function() {
               value = value * ramPriceUsd * 1024 * 1024;
               break;
             }
-            if (currencyValue == "EOS") {
+            if (currencyValue == "TLOS") {
               value = value * ramPriceEos * 1024 * 1024;
               break;
             }
@@ -510,7 +510,7 @@ $(function() {
           priceValue = netPriceUsd;
           roundingUnits = 3;
         }
-        if (currencyValue == "EOS") {
+        if (currencyValue == "TLOS") {
           priceValue = netPriceEos;
           roundingUnits = 8;
         }
@@ -521,7 +521,7 @@ $(function() {
               value = (value * netPriceUsd) / 1024;
               break;
             }
-            if (currencyValue == "EOS") {
+            if (currencyValue == "TLOS") {
               value = (value * netPriceEos) / 1024;
               break;
             }
@@ -530,7 +530,7 @@ $(function() {
               value = value * netPriceUsd;
               break;
             }
-            if (currencyValue == "EOS") {
+            if (currencyValue == "TLOS") {
               value = value * netPriceEos;
               break;
             }
@@ -540,7 +540,7 @@ $(function() {
               value = value * netPriceUsd * 1024;
               break;
             }
-            if (currencyValue == "EOS") {
+            if (currencyValue == "TLOS") {
               value = value * netPriceEos * 1024;
               break;
             }
@@ -550,7 +550,7 @@ $(function() {
               value = value * netPriceUsd * 1024 * 1024;
               break;
             }
-            if (currencyValue == "EOS") {
+            if (currencyValue == "TLOS") {
               value = value * netPriceEos * 1024 * 1024;
               break;
             }
@@ -573,7 +573,7 @@ $(function() {
           priceValue = cpuPriceUsd;
           roundingUnits = 3;
         }
-        if (currencyValue == "EOS") {
+        if (currencyValue == "TLOS") {
           priceValue = cpuPriceEos;
           roundingUnits = 8;
         }
@@ -584,7 +584,7 @@ $(function() {
               value = (value * cpuPriceUsd) / 1000;
               break;
             }
-            if (currencyValue == "EOS") {
+            if (currencyValue == "TLOS") {
               value = (value * cpuPriceEos) / 1000;
               break;
             }
@@ -593,7 +593,7 @@ $(function() {
               value = value * cpuPriceUsd;
               break;
             }
-            if (currencyValue == "EOS") {
+            if (currencyValue == "TLOS") {
               value = value * cpuPriceEos;
               break;
             }
@@ -603,7 +603,7 @@ $(function() {
               value = value * cpuPriceUsd * 1000;
               break;
             }
-            if (currencyValue == "EOS") {
+            if (currencyValue == "TLOS") {
               value = value * cpuPriceEos * 1000;
               break;
             }
