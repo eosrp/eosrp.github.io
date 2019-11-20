@@ -240,7 +240,7 @@ $(window).load(function($loadEvent) {
   
   function showRequestError(message) {
       $("#request_error_message").text(message);
-      $("#request_error").show();
+      $("#request_error").removeClass("hidden");
   }
   /* --- End of EOS data routines --- */
 
