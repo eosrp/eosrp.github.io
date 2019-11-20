@@ -442,7 +442,7 @@ h1#logo {
 	float: left;
 }
 h1#logo a {
-	background: url(../images/ghobson-logo.png) center no-repeat;
+	background: url(../images/telos-logo.jpeg) center no-repeat;
 	background-size: 182px 70px;
 	width: 182px;
 	height: 70px;
@@ -463,7 +463,7 @@ h1#logo a {
   background: url(../images/ghobson-logo.png) center no-repeat;
   background-size: 60px 82px;
   width: 60px;
-  height: 82px;
+  height: 64px;
   position: absolute;
   right: 35px;
   bottom: 12px;
