@@ -237,6 +237,11 @@ $(window).load(function($loadEvent) {
       let cpuPriceUsdElem = $("#cpu-price-usd");
       cpuPriceUsdElem.html(`~ $${(cpuPriceEos * tlosPriceUsd).toFixed(3)} USD/ms/Day`);
   }
+  
+  function showRequestError(message) {
+      $("#request_error_message").text(message);
+      $("#request_error").show();
+  }
   /* --- End of EOS data routines --- */
 
   function eborLoadIsotope() {
