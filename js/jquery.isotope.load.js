@@ -27,10 +27,10 @@ jQuery(window).load(function($) {
     }
   }
 
-  var reqTlos = getXmlHttpRequestObject();
-  var reqEos = getXmlHttpRequestObject();
-  var reqRam = getXmlHttpRequestObject();
-  var reqBan = getXmlHttpRequestObject();
+  var reqTlos   = getXmlHttpRequestObject();
+  var reqEos    = getXmlHttpRequestObject();
+  var reqRam    = getXmlHttpRequestObject();
+  var reqBan    = getXmlHttpRequestObject();
   var reqGlobal = getXmlHttpRequestObject();
 
   function updateEosData() {
@@ -78,6 +78,7 @@ jQuery(window).load(function($) {
     if (reqGlobal.readyState == 4) {
       parseStateGlobal(JSON.parse(reqGlobal.responseText));
       reqEos.send();
+      reqTlos.send();
     }
   }
 
