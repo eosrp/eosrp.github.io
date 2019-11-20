@@ -25,11 +25,11 @@ jQuery(window).load(function($) {
     }
 
     if (reqBan.readyState == 4 || reqBan.readyState == 0) {
-      reqBan.open("POST", "https://api.eossweden.org/v1/chain/get_account");
+      reqBan.open("POST", "https://telos.eos.barcelona/v1/chain/get_account");
       reqBan.onreadystatechange = handleResponseBan;
     }
     reqEos.send();
-    reqBan.send(JSON.stringify({ account_name: "eosnewyorkio" }));
+    reqBan.send(JSON.stringify({ account_name: "eosbarcelona" }));
   }
 
   function handleResponseEos() {
@@ -60,7 +60,7 @@ jQuery(window).load(function($) {
     );
     var cpuAvailable = xDoc.cpu_limit.max / 1000; // convert microseconds to milliseconds
     var cpuPrice = cpuStaked / cpuAvailable;
-    target.innerHTML = cpuPrice.toFixed(8) + " EOS per Ms";
+    target.innerHTML = cpuPrice.toFixed(8) + " TLOS per Ms";
     target = document.getElementById("cpu-price-usd");
     target.innerHTML =
       "~ $" + (cpuPrice.toFixed(8) * eosPriceUsd).toFixed(3) + " USD per Ms";
