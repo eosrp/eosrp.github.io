@@ -42,15 +42,15 @@ jQuery(window).load(function($) {
     if (reqEos.readyState == 4 || reqEos.readyState == 0) {
       reqEos.open(
         "GET",
-        "https://api.newdex.io/v1/ticker?symbol=eosio.token-eos-eusd"
-      );
+        "https://api.newdex.io/v1/ticker?symbol=eosio.token-eos-eusd",
+        false);
       reqEos.onreadystatechange = handleResponseEos;
     }
 
     if (reqTlos.readyState == 4 || reqTlos.readyState == 0) {
       reqTlos.open(
         "GET",
-        "https://api.newdex.io/v1/ticker?symbol=eosio.token-tlos-eos"
+        "https://api.newdex.io/v1/ticker?symbol=eosio.token-tlos-eos", false
       );
       reqTlos.onreadystatechange = handleResponseTlos;
     }
