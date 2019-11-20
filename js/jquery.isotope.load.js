@@ -72,13 +72,13 @@ jQuery(window).load(function($) {
         table: "global"
       })
     );
+    reqEos.send();
+    reqTlos.send();
   }
 
   function handleResponseGlobal() {
     if (reqGlobal.readyState == 4) {
       parseStateGlobal(JSON.parse(reqGlobal.responseText));
-      reqEos.send();
-      reqTlos.send();
     }
   }
 
