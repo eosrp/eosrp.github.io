@@ -63,7 +63,7 @@ $(window).load(function($loadEvent) {
               usedRam = responseJson.rows[0].total_ram_bytes_reserved;
           })
           .catch(xhr => {
-              showRequestError(`Failed to contact data source server (${chainEndpoint}).  Check your browser console for details.`);
+              showRequestError(`Failed to get data from (${chainEndpoint}). Please refresh the page and try again. Check console for details. `);
               console.error(xhr);
           });
 
