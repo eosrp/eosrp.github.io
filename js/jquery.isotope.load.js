@@ -70,7 +70,9 @@ $(window).load(function($loadEvent) {
       // EOS
       let eosPromise = new Promise((resolve, reject) => {
           let reqEos = getXmlHttpRequestObject();
-          reqEos.open("GET", "https://api.newdex.io/v1/ticker?symbol=eosio.token-eos-eusd");
+          // newdex.io broke CORS for browsers
+          //reqEos.open("GET", "https://api.newdex.io/v1/ticker?symbol=eosio.token-eos-eusd");
+          reqEos.open("GET", "https://api.coingecko.com/api/v3/simple/price?ids=eos&vs_currencies=usd");
           reqEos.onload = () => {
               resolve(reqEos);
           };
@@ -83,7 +85,8 @@ $(window).load(function($loadEvent) {
           .then(xhr => {
               let responseJson = JSON.parse(xhr.responseText);
 
-              eosPriceUsd = responseJson.data.last;
+              eosPriceUsd = responseJson.eos.usd;
+              //eosPriceUsd = responseJson.data.last;
           })
           .catch(xhr => {
               showRequestError(`Failed to contact data source server (newdex).  Check your browser console for details.`);
@@ -93,7 +96,8 @@ $(window).load(function($loadEvent) {
       // TLOS
       let tlosPromise = new Promise((resolve, reject) => {
           let reqTlos = getXmlHttpRequestObject();
-          reqTlos.open("GET", "https://api.newdex.io/v1/ticker?symbol=eosio.token-tlos-eos");
+          //reqTlos.open("GET", "https://api.newdex.io/v1/ticker?symbol=eosio.token-tlos-eos");
+          reqEos.open("GET", "https://api.coingecko.com/api/v3/simple/price?ids=telos&vs_currencies=eos"); 
           reqTlos.onload = () => {
               resolve(reqTlos);
           };
@@ -105,8 +109,8 @@ $(window).load(function($loadEvent) {
       })
           .then(xhr => {
               let responseJson = JSON.parse(xhr.responseText);
-
-              tlosEosScalar = responseJson.data.last;
+              tlosEosScalar = responseJson.telos.eos;
+              //tlosEosScalar = responseJson.data.last;
           })
           .catch(xhr => {
               showRequestError(`Failed to contact data source server (newdex).  Check your browser console for details.`);
