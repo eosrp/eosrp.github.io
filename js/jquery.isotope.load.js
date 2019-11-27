@@ -97,7 +97,7 @@ $(window).load(function($loadEvent) {
       let tlosPromise = new Promise((resolve, reject) => {
           let reqTlos = getXmlHttpRequestObject();
           //reqTlos.open("GET", "https://api.newdex.io/v1/ticker?symbol=eosio.token-tlos-eos");
-          reqEos.open("GET", "https://api.coingecko.com/api/v3/simple/price?ids=telos&vs_currencies=eos"); 
+          reqTlos.open("GET", "https://api.coingecko.com/api/v3/simple/price?ids=telos&vs_currencies=eos"); 
           reqTlos.onload = () => {
               resolve(reqTlos);
           };
