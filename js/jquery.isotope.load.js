@@ -71,7 +71,6 @@ $(window).load(function($loadEvent) {
       let eosPromise = new Promise((resolve, reject) => {
           let reqEos = getXmlHttpRequestObject();
           reqEos.open("GET", "https://api.newdex.io/v1/ticker?symbol=eosio.token-eos-eusd");
-          reqEos.setRequestHeader('accept-encoding','br');
           reqEos.onload = () => {
               resolve(reqEos);
           };
@@ -95,7 +94,6 @@ $(window).load(function($loadEvent) {
       let tlosPromise = new Promise((resolve, reject) => {
           let reqTlos = getXmlHttpRequestObject();
           reqTlos.open("GET", "https://api.newdex.io/v1/ticker?symbol=eosio.token-tlos-eos");
-          reqTlos.setRequestHeader('accept-encoding','br');
           reqTlos.onload = () => {
               resolve(reqTlos);
           };
