@@ -443,7 +443,7 @@ h1#logo {
 }
 h1#logo a {
 	background: url(../images/telos-logo-light.png) center no-repeat;
-	background-size: 170px 30px;
+	background-size: 170px 60px;
 	width: 170px;
 	height: 60px;
 	text-indent: -9999px;
