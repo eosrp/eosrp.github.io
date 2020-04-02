@@ -8,7 +8,7 @@ var cpuPriceUsd;
 var maxRam;
 var usedRam;
 
-var chainEndpoint = "https://api.eossweden.org'";
+var chainEndpoint = "https://api.eossweden.org";
 
 $(window).load(function($loadEvent) {
   "use strict";

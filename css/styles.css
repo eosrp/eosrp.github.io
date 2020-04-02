@@ -438,14 +438,14 @@ h1#logo {
 	margin: 0;
 	display: block;
 	margin-left: 35px;
-	top: 2px;
+	top: -3px;
 	float: left;
 }
 h1#logo a {
 	background: url(../images/eos-logo.png) center no-repeat;
-	background-size: 170px 60px;
-	width: 170px;
-	height: 60px;
+	background-size: 182px 70px;
+	width: 182px;
+	height: 70px;
 	text-indent: -9999px;
 	display: block;
 }
