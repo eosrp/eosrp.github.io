@@ -2,11 +2,11 @@
 <html class="no-js" lang="en">
   <head>
     <meta charset="utf-8">
-    <title>TLOS Resource Planner</title>
+    <title>EOS Resource Planner</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="author" content="Andrew Coutts">
     <meta name="author" content="Gary Hobson">
-    <meta name="Description" content="TRP is a free and open-source tool to display the current price for TELOS network storage and bandwidth resources.">
+    <meta name="Description" content="ERP is a free and open-source tool to display the current price for EOS network storage and bandwidth resources.">
 
     <!-- Favicons -->
     <link rel="apple-touch-icon-precomposed" sizes="57x57" href="apple-touch-icon-57x57.png" />
@@ -22,7 +22,7 @@
     <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
     <link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16" />
     <link rel="icon" type="image/png" href="favicon-128.png" sizes="128x128" />
-    <meta name="application-name" content="TLOS Resource Planner"/>
+    <meta name="application-name" content="EOS Resource Planner"/>
     <meta name="msapplication-TileColor" content="#FFFFFF" />
     <meta name="msapplication-TileImage" content="mstile-144x144.png" />
     <meta name="msapplication-square70x70logo" content="mstile-70x70.png" />
@@ -70,9 +70,9 @@
 
       <!-- start header -->
       <header id="header" class="clearfix">
-        <h1 id="logo"><a href="index.html">TLOS Resource Planner</a></h1>
+        <h1 id="logo"><a href="index.html">EOS Resource Planner</a></h1>
         <!-- start main nav -->
-        <h4 id="headertitle">TLOS Resource Planner</h4>
+        <h4 id="headertitle">EOS Resource Planner</h4>
         <nav id="main-nav">
           <ul class="clearfix" id="options">
             <li> <a href="#">Overview</a></li>
@@ -89,7 +89,7 @@
       <div id="content">
         <div class="container clearfix">
           <!-- ITEMS PERSISTED ON ALL PAGES -->
-          <h4 id="headertitle-inner">TLOS Resource Planner</h4>
+          <h4 id="headertitle-inner">EOS Resource Planner</h4>
           <div class="extra-padding-top">
             <!-- GLOBAL ALERT BANNER -->
             <div class="alert alert-info hidden" id="headeralert" role="alert">
@@ -130,15 +130,15 @@
                 <p class="small">Introduction</p>
                 <div>
                   <h4 class="header icon-to-the-right">What is RAM?</h4>
-                  <p>RAM is required to store data on the blockchain and must be purchased. You get a set number of bytes of storage based on the current RAM market price. The price automatically adjusts up and down with buying and selling action. When you release storage you can sell RAM back to recover TLOS at the current ram market price.</p>
+                  <p>RAM is required to store data on the blockchain and must be purchased. You get a set number of bytes of storage based on the current RAM market price. The price automatically adjusts up and down with buying and selling action. When you release storage you can sell RAM back to recover EOS at the current ram market price.</p>
                 </div>
                 <div>
                   <h4 class="header icon-to-the-right">What is Network Bandwidth?</h4>
-                  <p>Network Bandwidth is measured as your average consumption in bytes over the last 3 days. Net bandwidth is temporarily consumed every time you send an action or transaction but decreases over time returning to 0. The more tokens you stake for net bandwidth the more you get to use. You can unstake at any time to reclaim your TLOS tokens.</p>
+                  <p>Network Bandwidth is measured as your average consumption in bytes over the last 3 days. Net bandwidth is temporarily consumed every time you send an action or transaction but decreases over time returning to 0. The more tokens you stake for net bandwidth the more you get to use. You can unstake at any time to reclaim your EOS tokens.</p>
                 </div>
                 <div>
                   <h4 class="header icon-to-the-right">What is CPU Bandwidth?</h4>
-                  <p>CPU Bandwidth is measured as your average consumption in microseconds over the last 3 days. CPU bandwidth is temporarily consumed when you send an action or transaction but decreases over time returning to 0. The longer your transaction runs, the more CPU bandwidth it will consume. You can unstake at any time  to reclaim your TLOS tokens.</p>
+                  <p>CPU Bandwidth is measured as your average consumption in microseconds over the last 3 days. CPU bandwidth is temporarily consumed when you send an action or transaction but decreases over time returning to 0. The longer your transaction runs, the more CPU bandwidth it will consume. You can unstake at any time  to reclaim your EOS tokens.</p>
                 </div>
                 <div class="icons futuro_icons_285 absolute-top-right"></div>
               </div>
@@ -180,7 +180,7 @@
                     <p class="col"><input name="eos-afford-ram" type="text" class="calc-change" id="eos-afford-ram" size="10" title="0.00000000" /></p>
                     <p class="col">
                       <select size="1" class="calc-change" id="ram-have-unit">
-                        <option value="eos">TLOS</option>
+                        <option value="eos">EOS</option>
                         <option value="usd">USD</option>
                       </select>
                     </p>
@@ -190,7 +190,7 @@
                     <p class="col"><input name="eos-afford-net" type="text" class="calc-change" id="eos-afford-net" size="10" title="0.00000000" /></p>
                     <p class="col">
                       <select size="1" class="calc-change" id="net-have-unit">
-                        <option value="eos">TLOS</option>
+                        <option value="eos">EOS</option>
                         <option value="usd">USD</option>
                       </select>
                     </p>
@@ -200,7 +200,7 @@
                     <p class="col"><input name="eos-afford-cpu" type="text" class="calc-change" id="eos-afford-cpu" size="10" title="0.00000000" /></p>
                     <p class="col">
                       <select size="1" class="calc-change" id="cpu-have-unit">
-                        <option value="eos">TLOS</option>
+                        <option value="eos">EOS</option>
                         <option value="usd">USD</option>
                       </select>
                     </p>
@@ -294,7 +294,7 @@
                     <p class="col" id="result-cost-ram">0.00000000</p>
                     <p class="col">
                       <select size="1" class="calc-change" id="ram-cost-unit">
-                        <option value="eos">TLOS</option>
+                        <option value="eos">EOS</option>
                         <option value="usd">USD</option>
                       </select>
                     </p>
@@ -304,7 +304,7 @@
                     <p class="col" id="result-cost-net">0.00000000</p>
                     <p class="col">
                       <select size="1" class="calc-change" id="net-cost-unit">
-                        <option value="eos">TLOS</option>
+                        <option value="eos">EOS</option>
                         <option value="usd">USD</option>
                       </select>
                     </p>
@@ -314,7 +314,7 @@
                     <p class="col" id="result-cost-cpu">0.00000000</p>
                     <p class="col">
                       <select size="1" class="calc-change" id="cpu-cost-unit">
-                        <option value="eos">TLOS</option>
+                        <option value="eos">EOS</option>
                         <option value="usd">USD</option>
                       </select>
                     </p>
@@ -333,8 +333,8 @@
         <div class="container clearfix">
           <div class="col">
             <div class="col" id="sourcecode">
-              <p>TRP is free & open source - help contribute here:<br />
-                <a href="https://github.com/telosrp/telosrp.github.io" target="_blank" title="">Source Code</a>
+              <p>ERP is free & open source - help contribute here:<br />
+                <a href="https://github.com/telosrp/eosrp.github.io" target="_blank" title="">Source Code</a>
               </p>
             </div>
             <div class="col">

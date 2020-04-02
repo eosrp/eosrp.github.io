@@ -7,10 +7,8 @@ var cpuPriceEos;
 var cpuPriceUsd;
 var maxRam;
 var usedRam;
-var tlosPriceUsd;
-let tlosEosScalar;
 
-var chainEndpoint = "https://telos.eos.barcelona";
+var chainEndpoint = "https://api.eossweden.org'";
 
 $(window).load(function($loadEvent) {
   "use strict";
@@ -93,30 +91,6 @@ $(window).load(function($loadEvent) {
               console.error(xhr);
           });
 
-      // TLOS
-      let tlosPromise = new Promise((resolve, reject) => {
-          let reqTlos = getXmlHttpRequestObject();
-          //reqTlos.open("GET", "https://api.newdex.io/v1/ticker?symbol=eosio.token-tlos-eos");
-          reqTlos.open("GET", "https://api.coingecko.com/api/v3/simple/price?ids=telos&vs_currencies=eos"); 
-          reqTlos.onload = () => {
-              resolve(reqTlos);
-          };
-          reqTlos.onerror = () => {
-              reject(reqTlos);
-          };
-
-          reqTlos.send();
-      })
-          .then(xhr => {
-              let responseJson = JSON.parse(xhr.responseText);
-              tlosEosScalar = responseJson.telos.eos;
-              //tlosEosScalar = responseJson.data.last;
-          })
-          .catch(xhr => {
-              showRequestError(`Failed to contact data source server (newdex).  Check your browser console for details.`);
-              console.error(xhr);
-          });
-
       // Ram
       let ramPromise = new Promise((resolve, reject) => {
           let reqRam = getXmlHttpRequestObject();
@@ -185,7 +159,7 @@ $(window).load(function($loadEvent) {
               console.error(xhr);
           });
 
-      Promise.all([globalPromise, eosPromise, tlosPromise, ramPromise, banPromise])
+      Promise.all([globalPromise, eosPromise, ramPromise, banPromise])
           .then(() => {
               runCalculations();
               updatePage();
@@ -193,17 +167,16 @@ $(window).load(function($loadEvent) {
   }
 
   function runCalculations() {
-      tlosPriceUsd = tlosEosScalar * eosPriceUsd;
 
-      ramPriceUsd = ramPriceEos * tlosPriceUsd;
-      netPriceUsd = netPriceEos * tlosPriceUsd;
-      cpuPriceUsd = cpuPriceEos * tlosPriceUsd;
+      ramPriceUsd = ramPriceEos * eosPriceUsd;
+      netPriceUsd = netPriceEos * eosPriceUsd;
+      cpuPriceUsd = cpuPriceEos * eosPriceUsd;
   }
 
   function updatePage() {
-      let tlosTarget = $("#eos-price-usd");
+      let eosTarget = $("#eos-price-usd");
 
-      tlosTarget.html(`1 TLOS = $${tlosPriceUsd.toFixed(2)} USD`);
+      eosTarget.html(`1 EOS = $${eosPriceUsd.toFixed(2)} USD`);
 
       let ramUtilization = (usedRam / maxRam) * 100;
       let maxRamTarget = $("#maxRam");
@@ -222,22 +195,22 @@ $(window).load(function($loadEvent) {
       ramUtilBarElem.css('width', ramUtilization.toFixed(2) + "%");
 
       let ramPriceEosElem = $("#ram-price-eos");
-      ramPriceEosElem.html(`${ramPriceEos} TLOS per KiB`);
+      ramPriceEosElem.html(`${ramPriceEos} EOS per KiB`);
 
       let ramPriceElem = $("#ram-price-usd");
-      ramPriceElem.html(`~ $${(ramPriceEos * tlosPriceUsd).toFixed(3)} USD per KiB`);
+      ramPriceElem.html(`~ $${(ramPriceEos * eosPriceUsd).toFixed(3)} USD per KiB`);
 
       let netPriceEosElem = $("#net-price-eos");
-      netPriceEosElem.html(`${netPriceEos} TLOS/KiB/Day`);
+      netPriceEosElem.html(`${netPriceEos} EOS/KiB/Day`);
 
       let netPriceUsdElem = $("#net-price-usd");
-      netPriceUsdElem.html(`~ $${(netPriceEos * tlosPriceUsd).toFixed(3)} USD/KiB/Day`);
+      netPriceUsdElem.html(`~ $${(netPriceEos * eosPriceUsd).toFixed(3)} USD/KiB/Day`);
 
       let cpuPriceEosElem = $("#cpu-price-eos");
-      cpuPriceEosElem.html(`${cpuPriceEos} TLOS/ms/Day`);
+      cpuPriceEosElem.html(`${cpuPriceEos} EOS/ms/Day`);
 
       let cpuPriceUsdElem = $("#cpu-price-usd");
-      cpuPriceUsdElem.html(`~ $${(cpuPriceEos * tlosPriceUsd).toFixed(3)} USD/ms/Day`);
+      cpuPriceUsdElem.html(`~ $${(cpuPriceEos * eosPriceUsd).toFixed(3)} USD/ms/Day`);
   }
   
   function showRequestError(message) {
@@ -345,7 +318,7 @@ $(function() {
         if (currencyValue == "USD") {
           priceValue = ramPriceUsd;
         }
-        if (currencyValue == "TLOS") {
+        if (currencyValue == "EOS") {
           priceValue = ramPriceEos;
         }
         value = document.getElementById("eos-afford-ram").value;
@@ -355,7 +328,7 @@ $(function() {
               value = (value / ramPriceUsd) * 1024;
               break;
             }
-            if (currencyValue == "TLOS") {
+            if (currencyValue == "EOS") {
               value = (value / ramPriceEos) * 1024;
               break;
             }
@@ -364,7 +337,7 @@ $(function() {
               value = value / ramPriceUsd;
               break;
             }
-            if (currencyValue == "TLOS") {
+            if (currencyValue == "EOS") {
               value = value / ramPriceEos;
               break;
             }
@@ -374,7 +347,7 @@ $(function() {
               value = value / ramPriceUsd / 1024;
               break;
             }
-            if (currencyValue == "TLOS") {
+            if (currencyValue == "EOS") {
               value = value / ramPriceEos / 1024;
               break;
             }
@@ -384,7 +357,7 @@ $(function() {
               value = value / ramPriceUsd / 1024 / 1024;
               break;
             }
-            if (currencyValue == "TLOS") {
+            if (currencyValue == "EOS") {
               value = value / ramPriceEos / 1024 / 1024;
               break;
             }
@@ -406,7 +379,7 @@ $(function() {
         if (currencyValue == "USD") {
           priceValue = netPriceUsd;
         }
-        if (currencyValue == "TLOS") {
+        if (currencyValue == "EOS") {
           priceValue = netPriceEos;
         }
         value = document.getElementById("eos-afford-net").value;
@@ -416,7 +389,7 @@ $(function() {
               value = (value / netPriceUsd) * 1024;
               break;
             }
-            if (currencyValue == "TLOS") {
+            if (currencyValue == "EOS") {
               value = (value / netPriceEos) * 1024;
               break;
             }
@@ -425,7 +398,7 @@ $(function() {
               value = value / netPriceUsd;
               break;
             }
-            if (currencyValue == "TLOS") {
+            if (currencyValue == "EOS") {
               value = value / netPriceEos;
               break;
             }
@@ -435,7 +408,7 @@ $(function() {
               value = value / netPriceUsd / 1024;
               break;
             }
-            if (currencyValue == "TLOS") {
+            if (currencyValue == "EOS") {
               value = value / netPriceEos / 1024;
               break;
             }
@@ -445,7 +418,7 @@ $(function() {
               value = value / netPriceUsd / 1024 / 1024;
               break;
             }
-            if (currencyValue == "TLOS") {
+            if (currencyValue == "EOS") {
               value = value / netPriceEos / 1024 / 1024;
               break;
             }
@@ -467,7 +440,7 @@ $(function() {
         if (currencyValue == "USD") {
           priceValue = cpuPriceUsd;
         }
-        if (currencyValue == "TLOS") {
+        if (currencyValue == "EOS") {
           priceValue = cpuPriceEos;
         }
         value = document.getElementById("eos-afford-cpu").value;
@@ -477,7 +450,7 @@ $(function() {
               value = (value / cpuPriceUsd) * 1000;
               break;
             }
-            if (currencyValue == "TLOS") {
+            if (currencyValue == "EOS") {
               value = (value / cpuPriceEos) * 1000;
               break;
             }
@@ -486,7 +459,7 @@ $(function() {
               value = value / cpuPriceUsd;
               break;
             }
-            if (currencyValue == "TLOS") {
+            if (currencyValue == "EOS") {
               value = value / cpuPriceEos;
               break;
             }
@@ -496,7 +469,7 @@ $(function() {
               value = value / cpuPriceUsd / 1000;
               break;
             }
-            if (currencyValue == "TLOS") {
+            if (currencyValue == "EOS") {
               value = value / cpuPriceEos / 1000;
               break;
             }
@@ -518,7 +491,7 @@ $(function() {
           priceValue = ramPriceUsd;
           roundingUnits = 3;
         }
-        if (currencyValue == "TLOS") {
+        if (currencyValue == "EOS") {
           priceValue = ramPriceEos;
           roundingUnits = 8;
         }
@@ -529,7 +502,7 @@ $(function() {
               value = (value * ramPriceUsd) / 1024;
               break;
             }
-            if (currencyValue == "TLOS") {
+            if (currencyValue == "EOS") {
               value = (value * ramPriceEos) / 1024;
               break;
             }
@@ -538,7 +511,7 @@ $(function() {
               value = value * ramPriceUsd;
               break;
             }
-            if (currencyValue == "TLOS") {
+            if (currencyValue == "EOS") {
               value = value * ramPriceEos;
               break;
             }
@@ -548,7 +521,7 @@ $(function() {
               value = value * ramPriceUsd * 1024;
               break;
             }
-            if (currencyValue == "TLOS") {
+            if (currencyValue == "EOS") {
               value = value * ramPriceEos * 1024;
               break;
             }
@@ -558,7 +531,7 @@ $(function() {
               value = value * ramPriceUsd * 1024 * 1024;
               break;
             }
-            if (currencyValue == "TLOS") {
+            if (currencyValue == "EOS") {
               value = value * ramPriceEos * 1024 * 1024;
               break;
             }
@@ -581,7 +554,7 @@ $(function() {
           priceValue = netPriceUsd;
           roundingUnits = 3;
         }
-        if (currencyValue == "TLOS") {
+        if (currencyValue == "EOS") {
           priceValue = netPriceEos;
           roundingUnits = 8;
         }
@@ -592,7 +565,7 @@ $(function() {
               value = (value * netPriceUsd) / 1024;
               break;
             }
-            if (currencyValue == "TLOS") {
+            if (currencyValue == "EOS") {
               value = (value * netPriceEos) / 1024;
               break;
             }
@@ -601,7 +574,7 @@ $(function() {
               value = value * netPriceUsd;
               break;
             }
-            if (currencyValue == "TLOS") {
+            if (currencyValue == "EOS") {
               value = value * netPriceEos;
               break;
             }
@@ -611,7 +584,7 @@ $(function() {
               value = value * netPriceUsd * 1024;
               break;
             }
-            if (currencyValue == "TLOS") {
+            if (currencyValue == "EOS") {
               value = value * netPriceEos * 1024;
               break;
             }
@@ -621,7 +594,7 @@ $(function() {
               value = value * netPriceUsd * 1024 * 1024;
               break;
             }
-            if (currencyValue == "TLOS") {
+            if (currencyValue == "EOS") {
               value = value * netPriceEos * 1024 * 1024;
               break;
             }
@@ -644,7 +617,7 @@ $(function() {
           priceValue = cpuPriceUsd;
           roundingUnits = 3;
         }
-        if (currencyValue == "TLOS") {
+        if (currencyValue == "EOS") {
           priceValue = cpuPriceEos;
           roundingUnits = 8;
         }
@@ -655,7 +628,7 @@ $(function() {
               value = (value * cpuPriceUsd) / 1000;
               break;
             }
-            if (currencyValue == "TLOS") {
+            if (currencyValue == "EOS") {
               value = (value * cpuPriceEos) / 1000;
               break;
             }
@@ -664,7 +637,7 @@ $(function() {
               value = value * cpuPriceUsd;
               break;
             }
-            if (currencyValue == "TLOS") {
+            if (currencyValue == "EOS") {
               value = value * cpuPriceEos;
               break;
             }
@@ -674,7 +647,7 @@ $(function() {
               value = value * cpuPriceUsd * 1000;
               break;
             }
-            if (currencyValue == "TLOS") {
+            if (currencyValue == "EOS") {
               value = value * cpuPriceEos * 1000;
               break;
             }
