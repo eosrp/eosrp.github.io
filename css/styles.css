@@ -432,7 +432,7 @@ blockquote footer {
 --------------------------------------------------------------------------------------------------------*/
 h1#logo {
 	position: relative;
-	height: 55px;
+	height: 65px;
 	width: 180px;
 	padding: 0 !important;
 	margin: 0;
@@ -445,7 +445,7 @@ h1#logo a {
 	background: url(../images/eos-logo.png) center no-repeat;
 	background-size: 120px 70px;
 	width: 120px;
-	height: 60px;
+	height: 65px;
 	text-indent: -9999px;
 	display: block;
 }
