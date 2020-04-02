@@ -444,8 +444,8 @@ h1#logo {
 h1#logo a {
 	background: url(../images/eos-logo.png) center no-repeat;
 	background-size: 120px 70px;
-	width: 100px;
-	height: 70px;
+	width: 120px;
+	height: 60px;
 	text-indent: -9999px;
 	display: block;
 }
